@@ -60,7 +60,7 @@ todo_include_todos = False
 
 # -- Use autoapi.extension to run sphinx-apidoc -------
 
-autoapi_dirs = ['../pychem']
+autoapi_dirs = ['../autode']
 
 # -- Options for HTML output ----------------------------------------------
 
