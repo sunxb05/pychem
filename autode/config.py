@@ -17,7 +17,8 @@ class Config:
     # will be used:
     # 1. 'orca', 2. 'g09' 3. 'nwchem'
     #
-    hcode = 'nwchem'
+    # hcode = 'nwchem'
+    hcode = 'xtb'   
     #
     # -------------------------------------------------------------------------
     # Semi-empirical/tight binding method to use. If set to None then the

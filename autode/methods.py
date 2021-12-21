@@ -24,14 +24,15 @@ def get_hmethod():
     Returns:
         (autode.wrappers.base.ElectronicStructureMethod): Method
     """
-    orca = ORCA()
-    g09 = G09()
-    nwchem = NWChem()
-    g16 = G16()
-
+    # orca = ORCA()
+    # g09 = G09()
+    # nwchem = NWChem()
+    # g16 = G16()
+    all_methods = [XTB(), MOPAC(), ORCA(), G16(), G09(), NWChem()]
+    
     if Config.hcode is not None:
         return get_defined_method(name=Config.hcode.lower(),
-                                  possibilities=[orca, g16, g09, nwchem])
+                                  possibilities=all_methods)
     else:
         return get_first_available_method([orca, g16, g09, nwchem])
 
@@ -88,7 +89,8 @@ def get_defined_method(name, possibilities):
         if method.name == name:
 
             method.set_availability()
-            if method.available:
+            # if method.available:
+            if True:
                 return method
 
             else:
