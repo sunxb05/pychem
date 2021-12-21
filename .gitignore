@@ -12,8 +12,11 @@ htmlcov
 .coverage
 coverage.xml
 .pytest_cache
+.github
+.readthedocs.yaml
 
 docs/_build
+others
 
 # ide
 .idea
