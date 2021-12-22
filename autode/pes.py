@@ -810,7 +810,3 @@ def polyfit2d(x, y, z, order):
     # (0,1), (0,2) ... (1,0), (1,1), (1,2) etc up to (order, order)
     coeff_mat, _, _, _ = np.linalg.lstsq(vander, z, rcond=None)
     return coeff_mat.reshape(deg + 1)
-
-
-
-

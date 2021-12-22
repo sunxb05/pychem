@@ -7,20 +7,15 @@ from autode.ts_guess import get_ts_guess
 from autode.utils import work_in
 from autode.mol_graphs import find_cycles
 import numpy as np
-
-"""
-The theory behind this original NEB implementation is taken from
-Henkelman and H. J ́onsson, J. Chem. Phys. 113, 9978 (2000)
-"""
-from autode.log import logger
 from autode.input_output import atoms_to_xyz_file
-from autode.calculation import Calculation
-from autode.utils import work_in
 from scipy.optimize import minimize
 from multiprocessing import Pool
 from copy import deepcopy
-import numpy as np
 
+"""
+The theory behind this original NEB implementation is taken from
+Henkelman and H. J ́onsson, J. Chem. loggerPhys. 113, 9978 (2000)
+"""
 
 def energy_gradient(image, method, n_cores):
     """Calculate energies and gradients for an image using a EST method"""

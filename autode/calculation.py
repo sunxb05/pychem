@@ -2,7 +2,6 @@ from copy import deepcopy
 import os
 import hashlib
 import base64
-from autode.point_charges import PointCharge
 from autode.solvents import get_available_solvent_names
 from autode.solvents import get_solvent
 from autode.config import Config
