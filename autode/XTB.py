@@ -5,7 +5,7 @@ from autode.utils import run_external
 from autode.config  import OptKeywords, GradientKeywords
 from autode.atoms import Atom
 from autode.config import Config
-from autode.constants import Constants
+from autode.units import Constants
 from autode.exceptions import AtomsNotFound
 from autode.utils import work_in_tmp_dir
 from autode.log import logger

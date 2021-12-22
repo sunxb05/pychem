@@ -1,6 +1,6 @@
 from copy import deepcopy
 import numpy as np
-from autode.constants import Constants
+from autode.units import Constants
 from autode.base import ElectronicStructureMethod
 from autode.utils import run_external
 from autode.atoms import Atom
