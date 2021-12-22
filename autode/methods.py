@@ -1,9 +1,5 @@
-from autode.wrappers.G09 import G09
-from autode.wrappers.G16 import G16
-from autode.wrappers.MOPAC import MOPAC
-from autode.wrappers.NWChem import NWChem
-from autode.wrappers.ORCA import ORCA
-from autode.wrappers.XTB import XTB
+from autode.G09 import G09
+from autode.XTB import XTB
 from autode.config import Config
 from autode.exceptions import MethodUnavailable
 from autode.log import logger
@@ -14,8 +10,8 @@ orca and Gaussian09 which can perform DFT/WF theory calculations, low level meth
 are non ab-initio methods and are therefore considerably faster
 """
 
-high_level_method_names = ['orca', 'g09', 'g16', 'nwchem']
-low_level_method_names = ['xtb', 'mopac']
+high_level_method_names = ['g09']
+low_level_method_names = ['xtb']
 
 
 def get_hmethod():
@@ -28,13 +24,10 @@ def get_hmethod():
     # g09 = G09()
     # nwchem = NWChem()
     # g16 = G16()
-    all_methods = [XTB(), MOPAC(), ORCA(), G16(), G09(), NWChem()]
+    all_methods = [XTB(), G09()]
     
-    if Config.hcode is not None:
-        return get_defined_method(name=Config.hcode.lower(),
+    return get_defined_method(name=Config.hcode.lower(),
                                   possibilities=all_methods)
-    else:
-        return get_first_available_method([orca, g16, g09, nwchem])
 
 
 def get_lmethod():
@@ -43,34 +36,11 @@ def get_lmethod():
     Returns:
         (autode.wrappers.base.ElectronicStructureMethod):
     """
-    all_methods = [XTB(), MOPAC(), ORCA(), G16(), G09(), NWChem()]
+    all_methods = [XTB(), G09()]
 
-    if Config.lcode is not None:
-        return get_defined_method(name=Config.lcode.lower(),
+    return get_defined_method(name=Config.lcode.lower(),
                                   possibilities=all_methods)
-    else:
-        return get_first_available_method(all_methods)
 
-
-def get_first_available_method(possibilities):
-    """
-    Get the first electronic structure method that is available in a list of
-    possibilities
-
-    Arguments:
-        possibilities (list(autode.wrappers.base.ElectronicStructureMethod)):
-
-    Returns:
-        (autode.wrappers.base.ElectronicStructureMethod): Method
-    """
-    for method in possibilities:
-
-        method.set_availability()
-        if method.available:
-            return method
-
-    logger.critical('No electronic structure methods available')
-    raise MethodUnavailable
 
 
 def get_defined_method(name, possibilities):

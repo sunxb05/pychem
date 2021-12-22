@@ -1,8 +1,8 @@
 from copy import deepcopy
 from multiprocessing import Pool
-from autode.transition_states.base import get_displaced_atoms_along_mode
-from autode.transition_states.base import TSbase
-from autode.transition_states.templates import TStemplate
+from autode.ts_base import get_displaced_atoms_along_mode
+from autode.ts_base import TSbase
+from autode.templates import TStemplate
 from autode.calculation import Calculation
 from autode.config import Config
 from autode.exceptions import AtomsNotFound, NoNormalModesFound

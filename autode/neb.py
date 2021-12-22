@@ -2,9 +2,9 @@ import autode.exceptions as ex
 from autode.config import Config
 from autode.log import logger
 from autode.calculation import Calculation
-from autode.neb.original import NEB
+from autode.neb_original import NEB
 from autode.methods import get_lmethod
-from autode.transition_states.ts_guess import get_ts_guess
+from autode.ts_guess import get_ts_guess
 from autode.utils import work_in
 from autode.mol_graphs import find_cycles
 import numpy as np

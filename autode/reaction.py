@@ -2,19 +2,71 @@ import base64
 import hashlib
 from copy import deepcopy
 from autode.config import Config
-from autode.solvent.solvents import get_solvent
-from autode.transition_states.locate_tss import find_tss
+from autode.solvents import get_solvent
+from autode.locate_tss import find_tss
 from autode.exceptions import UnbalancedReaction
 from autode.exceptions import SolventsDontMatch
+from autode.exceptions import ReactionFormationFalied
 from autode.log import logger
 from autode.methods import get_hmethod
-from autode.species.complex import get_complexes
-from autode.species.molecule import Product
-from autode.species.molecule import Reactant
-from autode.plotting import plot_reaction_profile
+from autode.complex import get_complexes
+from autode.molecule import Product
+from autode.molecule import Reactant
 from autode.units import KcalMol
 from autode.utils import work_in
-from autode.reactions import reaction_types
+
+
+
+class ReactionType:
+
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def __init__(self, name):
+
+        self.name = name
+
+
+Addition = ReactionType(name='addition')
+Dissociation = ReactionType(name='dissociation')
+Substitution = ReactionType(name='substitution')
+Elimination = ReactionType(name='elimination')
+Rearrangement = ReactionType(name='rearrangement')
+
+
+def classify(reactants, products):
+
+    if len(reactants) == 2 and len(products) == 1:
+        logger.info('Classifying reaction as addition')
+        return Addition
+
+    elif len(reactants) == 1 and len(products) in [2, 3]:
+        logger.info('Classifying reaction as dissociation')
+        return Dissociation
+
+    elif len(reactants) == 2 and len(products) == 2:
+        logger.info('Classifying reaction as substitution')
+        return Substitution
+
+    elif len(reactants) == 2 and len(products) == 3:
+        logger.info('Classifying reaction as elimination')
+        return Elimination
+
+    elif len(reactants) == 1 and len(products) == 1:
+        logger.info('Classifying reaction as rearrangement')
+        return Rearrangement
+
+    elif len(reactants) == 0:
+        logger.critical('Reaction had no reactants – cannot form a reaction')
+        raise ReactionFormationFalied
+
+    elif len(products) == 0:
+        logger.critical('Reaction had no products – cannot form a reaction')
+        raise ReactionFormationFalied
+
+    else:
+        logger.critical('Unsupported reaction type')
+        raise NotImplementedError
 
 
 class Reaction:
@@ -308,9 +360,6 @@ class Reaction:
             reactions_wc.append(Reaction(*self.prods, product_complex,
                                          name='product_complex'))
 
-        plot_reaction_profile(reactions=reactions_wc,
-                              units=units, name=self.name)
-
         return None
 
     def calculate_reaction_profile(self, units=KcalMol, with_complexes=False):
@@ -336,11 +385,6 @@ class Reaction:
 
         calculate(self)
 
-        if not with_complexes:
-            plot_reaction_profile([self], units=units, name=self.name)
-
-        if with_complexes:
-            self._plot_reaction_profile_with_complexes(units=units)
 
         return None
 
@@ -375,8 +419,7 @@ class Reaction:
 
         self.reactant, self.product = None, None
         self.ts, self.tss = None, None
-
-        self.type = reaction_types.classify(self.reacs, self.prods)
+        self.type = classify(self.reacs, self.prods)
         self.solvent = get_solvent(solvent_name=solvent_name)
 
         self._check_solvent()

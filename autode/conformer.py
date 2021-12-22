@@ -2,7 +2,7 @@ from autode.calculation import Calculation
 from autode.config import Config
 from autode.exceptions import AtomsNotFound
 from autode.log import logger
-from autode.species.species import Species
+from autode.species import Species
 
 
 def get_conformer(species, name):

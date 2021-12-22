@@ -1,5 +1,98 @@
-from autode.wrappers.keywords import KeywordsSet
+class KeywordsSet:
 
+    def __init__(self, low_opt=None, grad=None, opt=None, opt_ts=None,
+                 hess=None, optts_block='', sp=None):
+        """
+        Keywords used to specify the type and method used in electronic
+        structure theory calculations. The input file for a single point
+        calculation will look something like:
+
+        ---------------------------------------------------------------------
+        <keyword line directive> autode.Keywords.sp[0] autode.Keywords.sp[1]
+        autode.Keywords.optts_block
+
+        <coordinate directive> <charge> <multiplicity>
+        .
+        .
+        coordinates
+        .
+        .
+        <end of coordinate directive>
+        ---------------------------------------------------------------------
+        Keyword Arguments:
+
+            low_opt (list(str)): List of keywords for a low level optimisation
+            grad (list(str)): List of keywords for a gradient calculation
+            opt (list(str)): List of keywords for a low level optimisation
+            opt_ts (list(str)): List of keywords for a low level optimisation
+            hess (list(str)): List of keywords for a low level optimisation
+            optts_block (str): String as extra input for a TS optimisation
+            sp  (list(str)): List of keywords for a single point calculation
+        :return:
+        """
+
+        self.low_opt = OptKeywords(low_opt)
+        self.opt = OptKeywords(opt)
+        self.opt_ts = OptKeywords(opt_ts)
+
+        self.grad = GradientKeywords(grad)
+        self.hess = HessianKeywords(hess)
+
+        self.sp = SinglePointKeywords(sp)
+
+        self.optts_block = optts_block
+
+
+class Keywords:
+
+    def __str__(self):
+        return '_'.join(self.keyword_list)
+
+    def copy(self):
+        return deepcopy(self.keyword_list)
+
+    def append(self, item):
+        assert type(item) is str
+
+        # Don't re-add a keyword that is already there
+        if any(kw.lower() == item.lower() for kw in self.keyword_list):
+            return
+
+        self.keyword_list.append(item)
+
+    def remove(self, item):
+        self.keyword_list.remove(item)
+
+    def __getitem__(self, item):
+        return self.keyword_list[item]
+
+    def __init__(self, keyword_list):
+        """
+        Read only list of keywords
+
+        Args:
+            keyword_list (list(str)): List of keywords used in a QM calculation
+        """
+        self.keyword_list = keyword_list if keyword_list is not None else []
+
+        # Input will break if all the keywords are not strings
+        assert all(type(kw) is str for kw in self.keyword_list)
+
+
+class OptKeywords(Keywords):
+    pass
+
+
+class HessianKeywords(Keywords):
+    pass
+
+
+class GradientKeywords(Keywords):
+    pass
+
+
+class SinglePointKeywords(Keywords):
+    pass
 
 class Config:
     # -------------------------------------------------------------------------
@@ -90,39 +183,6 @@ class Config:
     hmethod_conformers = True
     # -------------------------------------------------------------------------
 
-    class ORCA:
-        # ---------------------------------------------------------------------
-        # Parameters for orca   https://sites.google.com/site/orcainputlibrary/
-        # ---------------------------------------------------------------------
-        #
-        # Path can be unset and will be assigned if it can be found in $PATH
-        path = None
-
-        keywords = KeywordsSet(low_opt=['LooseOpt', 'PBE',  'D3BJ',
-                                        'def2-SVP'],
-                               grad=['EnGrad', 'PBE0', 'D3BJ', 'def2-SVP'],
-                               opt=['Opt', 'PBE0', 'RIJCOSX', 'D3BJ',
-                                    'def2-SVP', 'def2/J'],
-                               opt_ts=['OptTS', 'Freq', 'PBE0', 'RIJCOSX',
-                                       'D3BJ', 'def2-SVP', 'def2/J'],
-                               hess=['Freq', 'PBE0', 'RIJCOSX', 'D3BJ',
-                                     'def2-SVP', 'def2/J'],
-                               sp=['SP', 'PBE0', 'RIJCOSX', 'D3BJ', 'def2/J',
-                                   'def2-TZVP'],
-                               optts_block=('%geom\n'
-                                            'Calc_Hess true\n'
-                                            'Recalc_Hess 30\n'
-                                            'Trust -0.1\n'
-                                            'MaxIter 150\n'
-                                            'end'))
-
-        # Implicit solvent in ORCA is either treated with CPCM or SMD, the
-        # former has support for a VdW surface construction which provides
-        # better geometry convergence (https://doi.org/10.1002/jcc.26139) SMD
-        # is in general more accurate, but does not (yet) have support for the
-        # VdW charge scheme. Use either 1. 'cpcm', 2. 'smd'
-        implicit_solvation_type = 'cpcm'
-
     class G09:
         # ---------------------------------------------------------------------
         # Parameters for g09                 https://gaussian.com/glossary/g09/
@@ -150,91 +210,6 @@ class Config:
         # Only SMD implemented
         implicit_solvation_type = 'smd'
 
-    class G16:
-        # ---------------------------------------------------------------------
-        # Parameters for g16                   https://gaussian.com/gaussian16/
-        # ---------------------------------------------------------------------
-        #
-        # path can be unset and will be assigned if it can be found in $PATH
-        path = None
-        #
-        disp = 'EmpiricalDispersion=GD3BJ'
-        ts_str = ('Opt=(TS, CalcFC, NoEigenTest, MaxCycles=100, MaxStep=10, '
-                  'NoTrustUpdate, RecalcFC=30)')
-
-        keywords = KeywordsSet(low_opt=['PBEPBE/Def2SVP', 'Opt=Loose', disp],
-                               grad=['PBE1PBE/Def2SVP', 'Force(NoStep)', disp],
-                               opt=['PBE1PBE/Def2SVP', 'Opt', disp],
-                               opt_ts=['PBE1PBE/Def2SVP', 'Freq', disp,
-                                       ts_str],
-                               hess=['PBE1PBE/Def2SVP', 'Freq', disp],
-                               sp=['PBE1PBE/Def2TZVP', disp])
-
-        # Only SMD implemented
-        implicit_solvation_type = 'smd'
-
-    class NWChem:
-        # ---------------------------------------------------------------------
-        # Parameters for nwchem    http://www.nwchem-sw.org/index.php/Main_Page
-        # ---------------------------------------------------------------------
-        #
-        # Path can be unset and will be assigned if it can be found in $PATH
-        path = None
-        #
-        svp_basis_block = 'basis\n  *   library Def2-SVP\nend'
-        tzvp_basis_block = 'basis\n  *   library Def2-TZVP\nend'
-        #
-        # Note that the default NWChem level is PBE0 and PBE rather than
-        # PBE0-D3BJ and PBE-D3BJ as only D3 is available
-        loose_opt_block = ('driver\n'
-                           '  gmax 0.002\n'
-                           '  grms 0.0005\n'
-                           '  xmax 0.01\n'
-                           '  xrms 0.007\n'
-                           '  eprec 0.00003\n'
-                           '  maxiter 50\n'
-                           'end')
-
-        opt_block = ('driver\n'
-                     '  gmax 0.0003\n'
-                     '  grms 0.0001\n'
-                     '  xmax 0.004\n'
-                     '  xrms 0.002\n'
-                     '  eprec 0.000005\n'
-                     '  maxiter 100\n'
-                     'end')
-
-        pbe_block = 'dft\n  maxiter 100\n  xc xpbe96 cpbe96\nend'
-        pbe0_block = 'dft\n  xc pbe0\nend'
-
-        keywords = KeywordsSet(low_opt=[loose_opt_block,
-                                        svp_basis_block,
-                                        pbe_block,
-                                        'task dft optimize'],
-                               grad=[svp_basis_block,
-                                     pbe0_block,
-                                     'task dft gradient'],
-                               opt=[opt_block,
-                                    svp_basis_block,
-                                    pbe0_block,
-                                    'task dft optimize',
-                                    'task dft property'],
-                               opt_ts=[opt_block,
-                                       svp_basis_block,
-                                       pbe0_block,
-                                       'task dft saddle',
-                                       'task dft freq',
-                                       'task dft property'],
-                               hess=[svp_basis_block,
-                                     pbe0_block,
-                                     'task dft freq'],
-                               sp=[tzvp_basis_block,
-                                   pbe0_block,
-                                   'task dft energy'])
-
-        # Only SMD implemented
-        implicit_solvation_type = 'smd'
-
     class XTB:
         # ---------------------------------------------------------------------
         # Parameters for xtb                  https://github.com/grimme-lab/xtb
@@ -248,18 +223,6 @@ class Config:
         # Only GBSA implemented
         implicit_solvation_type = 'gbsa'
 
-    class MOPAC:
-        # ---------------------------------------------------------------------
-        # Parameters for mopac                             http://openmopac.net
-        # ---------------------------------------------------------------------
-        #
-        # path can be unset and will be assigned if it can be found in $PATH
-        path = None
-        #
-        # Note: all optimisations at this low level will be in the gas phase
-        # using the keywords_list specified here. Solvent in mopac is defined
-        # by EPS and the dielectric
-        keywords = KeywordsSet(low_opt=['PM7', 'PRECISE'])
-        #
-        # Only COSMO implemented
-        implicit_solvation_type = 'cosmo'
+from copy import deepcopy
+
+

@@ -2,10 +2,10 @@ import numpy as np
 from scipy.optimize import minimize
 from autode.exceptions import NoMapping
 from autode.atoms import metals
-from autode.transition_states.transition_state import get_ts_object
-from autode.transition_states.truncation import get_truncated_complex
-from autode.transition_states.truncation import is_worth_truncating
-from autode.transition_states.ts_guess import get_template_ts_guess
+from autode.transition_state import get_ts_object
+from autode.truncation import get_truncated_complex
+from autode.truncation import is_worth_truncating
+from autode.ts_guess import get_template_ts_guess
 from autode.bond_rearrangement import get_bond_rearrangs
 from autode.config import Config
 from autode.log import logger
@@ -14,14 +14,23 @@ from autode.methods import get_lmethod
 from autode.mol_graphs import get_mapping
 from autode.mol_graphs import reac_graph_to_prod_graph
 from autode.mol_graphs import reorder_nodes
-from autode.pes.pes import FormingBond, BreakingBond
-from autode.pes.pes_1d import get_ts_guess_1d
-from autode.pes.pes_2d import get_ts_guess_2d
-from autode.neb.neb import get_ts_guess_neb
-from autode.reactions.reaction_types import Substitution, Elimination
+from autode.pes import FormingBond, BreakingBond, get_ts_guess_1d, get_ts_guess_2d
+from autode.neb import get_ts_guess_neb
 from autode.mol_graphs import species_are_isomorphic
 from autode.substitution import get_cost_rotate_translate
 from autode.substitution import get_substitution_centres
+
+class ReactionType:
+
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def __init__(self, name):
+
+        self.name = name
+
+Substitution = ReactionType(name='substitution')
+Elimination = ReactionType(name='elimination')
 
 def find_tss(reaction):
     """Find all the possible the transition states of a reaction

@@ -5,11 +5,11 @@ from scipy.spatial import distance_matrix
 from autode.log import logger
 from autode.geom import get_points_on_sphere
 from autode.mol_graphs import union
-from autode.species.species import Species
+from autode.species import Species
 from autode.utils import requires_atoms
 from autode.config import Config
 from autode.methods import get_lmethod
-from autode.conformers.conformer import get_conformer
+from autode.conformer import get_conformer
 from autode.exceptions import MethodUnavailable
 
 

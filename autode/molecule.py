@@ -1,18 +1,18 @@
 from multiprocessing import Pool
 from rdkit.Chem import AllChem
 from autode.input_output import xyz_file_to_atoms
-from autode.conformers.conformer import Conformer
-from autode.conformers.conf_gen import get_simanl_atoms
-from autode.conformers.conformers import conf_is_unique_rmsd
-from autode.conformers.conformers import get_atoms_from_rdkit_mol_object
+from autode.conformer import Conformer
+from autode.conf_gen import get_simanl_atoms
+from autode.conformers import conf_is_unique_rmsd, get_atoms_from_rdkit_mol_object
 from autode.atoms import metals
 from autode.config import Config
 from autode.log import logger
 from autode.mol_graphs import make_graph
-from autode.smiles.smiles import init_organic_smiles
-from autode.smiles.smiles import init_smiles
-from autode.species.species import Species
+from autode.smiles import init_organic_smiles
+from autode.smiles import init_smiles
+from autode.species import Species
 from autode.utils import requires_atoms
+
 
 
 class Molecule(Species):
@@ -87,7 +87,6 @@ class Molecule(Species):
 
             # If the conformer is unique on an RMSD threshold
             if conf_is_unique_rmsd(conf, self.conformers):
-                conf.solvent = self.solvent
                 self.conformers.append(conf)
 
         logger.info(f'Generated {len(self.conformers)} unique conformer(s)')

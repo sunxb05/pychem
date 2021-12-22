@@ -1,8 +1,8 @@
 import numpy as np
 import os
-from autode.wrappers.base import ElectronicStructureMethod
+from autode.base import ElectronicStructureMethod
 from autode.utils import run_external
-from autode.wrappers.keywords import OptKeywords, GradientKeywords
+from autode.config  import OptKeywords, GradientKeywords
 from autode.atoms import Atom
 from autode.config import Config
 from autode.constants import Constants

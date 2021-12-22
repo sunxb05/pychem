@@ -3,11 +3,11 @@ import os
 import hashlib
 import base64
 from autode.point_charges import PointCharge
-from autode.solvent.solvents import get_available_solvent_names
-from autode.solvent.solvents import get_solvent
+from autode.solvents import get_available_solvent_names
+from autode.solvents import get_solvent
 from autode.config import Config
-from autode.wrappers.keywords import Keywords
-from autode.solvent.solvents import Solvent
+from autode.config import Keywords
+from autode.solvents import Solvent
 from autode.exceptions import AtomsNotFound
 from autode.exceptions import CouldNotGetProperty
 from autode.exceptions import MethodUnavailable

@@ -5,10 +5,10 @@ from autode.exceptions import AtomsNotFound
 from autode.exceptions import NoNormalModesFound
 from autode.log import logger
 from autode.methods import get_hmethod, get_lmethod
-from autode.species.molecule import Molecule
+from autode.molecule import Molecule
 from autode.mol_graphs import make_graph
 from autode.mol_graphs import species_are_isomorphic
-from autode.species.species import Species
+from autode.species import Species
 
 
 class TSbase(Species):
