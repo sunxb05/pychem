@@ -2,6 +2,7 @@ from copy import deepcopy
 import os
 import hashlib
 import base64
+from autode.point_charges import PointCharge
 from autode.solvents import get_available_solvent_names
 from autode.solvents import get_solvent
 from autode.config import Config
@@ -458,11 +459,6 @@ class CalculationInput:
 
         assert self.solvent is None or type(self.solvent) is str
         assert self.other_block is None or type(self.other_block) is str
-
-        # Ensure the point charges are given as a list of PointCharge objects
-        if self.point_charges is not None:
-            assert type(self.point_charges) is list
-            assert all(type(pc) is PointCharge for pc in self.point_charges)
 
         if self.added_internals is not None:
             assert type(self.added_internals) is list

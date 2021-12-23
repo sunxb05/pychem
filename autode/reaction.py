@@ -78,8 +78,8 @@ class Reaction:
         name = (f'{self.name}_{"+".join([r.name for r in self.reacs])}--'
                 f'{"+".join([p.name for p in self.prods])}')
 
-        if self.solvent is not None:
-            name += f'_{self.solvent.name}'
+        # if self.solvent is not None:
+        #     name += f'_{self.solvent.name}'
 
         hasher = hashlib.sha1(name.encode()).digest()
         return base64.urlsafe_b64encode(hasher).decode()[:6]
@@ -168,6 +168,7 @@ class Reaction:
             self.prods.append(Product(name=name(prod_smiles),
                                       smiles=prod_smiles))
         return None
+
 
     def switch_reactants_products(self):
         """Addition reactions are hard to find the TSs for, so swap reactants
@@ -409,13 +410,6 @@ class Reaction:
         self.name = name
         self.reacs = [mol for mol in args if isinstance(mol, Reactant)]
         self.prods = [mol for mol in args if isinstance(mol, Product)]
-
-        # If there is only one string argument assume it's a SMILES
-        if len(args) == 1 and type(args[0]) is str:
-            smiles = args[0]
-
-        if smiles is not None:
-            self._init_from_smiles(smiles)
 
         self.reactant, self.product = None, None
         self.ts, self.tss = None, None

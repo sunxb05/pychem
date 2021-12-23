@@ -130,7 +130,7 @@ class Molecule(Species):
         if smiles is not None:
             self._init_smiles(smiles)
 
-        elif atoms is not None:
+        elif atoms is not None:        
             make_graph(self)
 
 
