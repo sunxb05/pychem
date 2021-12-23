@@ -43,14 +43,14 @@ class ElectronicStructureMethod(ABC):
         """
         pass
 
-    def generate_explicitly_solvated_input(self, calculation_input):
-        """
-        Function implemented in individual child classes
+    # def generate_explicitly_solvated_input(self, calculation_input):
+    #     """
+    #     Function implemented in individual child classes
 
-        Arguments:
-            calculation_input (autode.calculation.CalculationInput):
-        """
-        raise NotImplementedError
+    #     Arguments:
+    #         calculation_input (autode.calculation.CalculationInput):
+    #     """
+    #     raise NotImplementedError
 
     def clean_up(self, calc):
         """

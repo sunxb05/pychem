@@ -3,8 +3,8 @@ import os
 import hashlib
 import base64
 from autode.point_charges import PointCharge
-from autode.solvents import get_available_solvent_names
-from autode.solvents import get_solvent
+# from autode.solvents import get_available_solvent_names
+# from autode.solvents import get_solvent
 from autode.config import Config
 from autode.config import Keywords
 from autode.solvents import Solvent
@@ -26,38 +26,38 @@ def execute_calc(calc):
     return calc.execute_calculation()
 
 
-def get_solvent_name(molecule, method):
-    """
-    Set the solvent keyword to use in the calculation given an QM method
+# def get_solvent_name(molecule, method):
+#     """
+#     Set the solvent keyword to use in the calculation given an QM method
 
-    Arguments:
-        molecule (autode.species.Species)
-        method (autode.wrappers.base.ElectronicStructureMethod):
-    """
+#     Arguments:
+#         molecule (autode.species.Species)
+#         method (autode.wrappers.base.ElectronicStructureMethod):
+#     """
 
-    if molecule.solvent is None:
-        logger.info('Calculation is in the gas phase')
-        return None
+#     if molecule.solvent is None:
+#         logger.info('Calculation is in the gas phase')
+#         return None
 
-    if type(molecule.solvent) is str:
-        # Solvent could be a string from e.g. cgbind
-        solvent = get_solvent(solvent_name=molecule.solvent)
+#     if type(molecule.solvent) is str:
+#         # Solvent could be a string from e.g. cgbind
+#         solvent = get_solvent(solvent_name=molecule.solvent)
 
-    elif isinstance(molecule.solvent, Solvent):
-        # Otherwise expecting a autode.solvents.solvent.Solvent
-        solvent = molecule.solvent
+#     elif isinstance(molecule.solvent, Solvent):
+#         # Otherwise expecting a autode.solvents.solvent.Solvent
+#         solvent = molecule.solvent
 
-    else:
-        raise SolventUnavailable('Expecting either a str or Solvent')
+#     else:
+#         raise SolventUnavailable('Expecting either a str or Solvent')
 
-    # Get the name of the solvent for this method
-    solvent_name = getattr(solvent, method.name)
+#     # Get the name of the solvent for this method
+#     solvent_name = getattr(solvent, method.name)
 
-    if solvent_name is None:
-        raise SolventUnavailable(f'Available solvents for {method.name} are '
-                                 f'{get_available_solvent_names(method)}')
+#     if solvent_name is None:
+#         raise SolventUnavailable(f'Available solvents for {method.name} are '
+#                                  f'{get_available_solvent_names(method)}')
 
-    return solvent_name
+#     return solvent_name
 
 
 class Calculation:
@@ -409,7 +409,8 @@ class Calculation:
 
         # ------------------- Calculation input/output ------------------------
         self.input = CalculationInput(keywords=deepcopy(keywords),
-                                      solvent=get_solvent_name(molecule, method),
+                                      # solvent=get_solvent_name(molecule, method),
+                                      solvent=None,
                                       additional_input=other_input_block,
                                       added_internals=bond_ids_to_add,
                                       point_charges=point_charges)

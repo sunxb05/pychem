@@ -8,8 +8,8 @@ from autode.atoms import metals
 from autode.config import Config
 from autode.log import logger
 from autode.mol_graphs import make_graph
-from autode.smiles import init_organic_smiles
-from autode.smiles import init_smiles
+# from autode.smiles import init_organic_smiles
+# from autode.smiles import init_smiles
 from autode.species import Species
 from autode.utils import requires_atoms
 
@@ -17,20 +17,20 @@ from autode.utils import requires_atoms
 
 class Molecule(Species):
 
-    def _init_smiles(self, smiles):
-        """Initialise a molecule from a SMILES string using RDKit if it's
-        purely organic"""
+    # def _init_smiles(self, smiles):
+    #     """Initialise a molecule from a SMILES string using RDKit if it's
+    #     purely organic"""
 
-        if any(metal in smiles for metal in metals):
-            init_smiles(self, smiles)
+    #     if any(metal in smiles for metal in metals):
+    #         init_smiles(self, smiles)
 
-        else:
-            init_organic_smiles(self, smiles)
+    #     else:
+    #         init_organic_smiles(self, smiles)
 
-        logger.info(f'Initialisation with SMILES successful. '
-                    f'Charge={self.charge}, Multiplicity={self.mult}, '
-                    f'Num. Atoms={self.n_atoms}')
-        return None
+    #     logger.info(f'Initialisation with SMILES successful. '
+    #                 f'Charge={self.charge}, Multiplicity={self.mult}, '
+    #                 f'Num. Atoms={self.n_atoms}')
+    #     return None
 
     def _init_xyz_file(self, xyz_filename):
         """Initialise a molecule from a .xyz file"""
@@ -127,26 +127,26 @@ class Molecule(Species):
 
         self.conformers = None
 
-        if smiles is not None:
-            self._init_smiles(smiles)
+        # if smiles is not None:
+        #     self._init_smiles(smiles)
 
-        elif atoms is not None:        
+        if atoms is not None:        
             make_graph(self)
 
 
-class SolvatedMolecule(Molecule):
+# class SolvatedMolecule(Molecule):
 
-    @requires_atoms()
-    def optimise(self, method):
-        raise NotImplementedError
+#     @requires_atoms()
+#     def optimise(self, method):
+#         raise NotImplementedError
 
-    def __init__(self, name='solvated_molecule', smiles=None, atoms=None,
-                 solvent_name=None, charge=0, mult=1, solvent_mol=None):
-        super().__init__(name, smiles, atoms, solvent_name, charge, mult)
+#     def __init__(self, name='solvated_molecule', smiles=None, atoms=None,
+#                  solvent_name=None, charge=0, mult=1, solvent_mol=None):
+#         super().__init__(name, smiles, atoms, solvent_name, charge, mult)
 
-        self.solvent_mol = solvent_mol
-        self.qm_solvent_atoms = None
-        self.mm_solvent_atoms = None
+#         self.solvent_mol = solvent_mol
+#         self.qm_solvent_atoms = None
+#         self.mm_solvent_atoms = None
 
 
 class Reactant(Molecule):
@@ -157,11 +157,11 @@ class Product(Molecule):
     pass
 
 
-def reactant_to_product(reactant):
-    reactant.__class__ = Product
-    return reactant
+# def reactant_to_product(reactant):
+#     reactant.__class__ = Product
+#     return reactant
 
 
-def product_to_reactant(product):
-    product.__class__ = Reactant
-    return product
+# def product_to_reactant(product):
+#     product.__class__ = Reactant
+#     return product

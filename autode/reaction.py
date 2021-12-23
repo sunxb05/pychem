@@ -2,7 +2,7 @@ import base64
 import hashlib
 from copy import deepcopy
 from autode.config import Config
-from autode.solvents import get_solvent
+# from autode.solvents import get_solvent
 from autode.locate_tss import find_tss
 from autode.exceptions import UnbalancedReaction
 from autode.exceptions import SolventsDontMatch
@@ -103,41 +103,41 @@ class Reaction:
         self.charge = total(self.reacs, 'charge')
         return None
 
-    def _check_solvent(self):
-        """Check that all the solvents are the same for reactants and products
-        """
-        molecules = self.reacs + self.prods
+    # def _check_solvent(self):
+    #     """Check that all the solvents are the same for reactants and products
+    #     """
+    #     molecules = self.reacs + self.prods
 
-        if self.solvent is None:
-            if all([mol.solvent is None for mol in molecules]):
-                logger.info('Reaction is in the gas phase')
-                return
+    #     if self.solvent is None:
+    #         if all([mol.solvent is None for mol in molecules]):
+    #             logger.info('Reaction is in the gas phase')
+    #             return
 
-            elif all([mol.solvent is not None for mol in molecules]):
-                if not all([mol.solvent == self.reacs[0].solvent for mol in molecules]):
-                    logger.critical('Solvents in reactants and products '
-                                    'don\'t match')
-                    raise SolventsDontMatch
+    #         elif all([mol.solvent is not None for mol in molecules]):
+    #             if not all([mol.solvent == self.reacs[0].solvent for mol in molecules]):
+    #                 logger.critical('Solvents in reactants and products '
+    #                                 'don\'t match')
+    #                 raise SolventsDontMatch
 
-                else:
-                    logger.info(f'Setting the reaction solvent to '
-                                f'{self.reacs[0].solvent}')
-                    self.solvent = self.reacs[0].solvent
+    #             else:
+    #                 logger.info(f'Setting the reaction solvent to '
+    #                             f'{self.reacs[0].solvent}')
+    #                 self.solvent = self.reacs[0].solvent
 
-            else:
-                logger.critical('Some species solvated and some not!')
-                raise SolventsDontMatch
+    #         else:
+    #             logger.critical('Some species solvated and some not!')
+    #             raise SolventsDontMatch
 
-        if self.solvent is not None:
-            logger.info(f'Setting solvent to {self.solvent.name} for all '
-                        f'molecules in the reaction')
+    #     if self.solvent is not None:
+    #         logger.info(f'Setting solvent to {self.solvent.name} for all '
+    #                     f'molecules in the reaction')
 
-            for mol in self.reacs + self.prods:
-                mol.solvent = self.solvent
+    #         for mol in self.reacs + self.prods:
+    #             mol.solvent = self.solvent
 
-        logger.info(f'Set the solvent of all species in the reaction to '
-                    f'{self.solvent.name}')
-        return None
+    #     logger.info(f'Set the solvent of all species in the reaction to '
+    #                 f'{self.solvent.name}')
+    #     return None
 
     def _init_from_smiles(self, reaction_smiles):
         """
@@ -414,7 +414,8 @@ class Reaction:
         self.reactant, self.product = None, None
         self.ts, self.tss = None, None
         self.type = classify(self.reacs, self.prods)
-        self.solvent = get_solvent(solvent_name=solvent_name)
+        # self.solvent = get_solvent(solvent_name=solvent_name)
+        self.solvent = None
 
-        self._check_solvent()
+        # self._check_solvent()
         self._check_balance()

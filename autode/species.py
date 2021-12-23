@@ -2,7 +2,7 @@ import numpy as np
 from copy import deepcopy
 from autode.conformers import get_unique_confs
 from autode.solvents import ExplicitSolvent
-from autode.solvents import get_solvent
+# from autode.solvents import get_solvent
 from autode.calculation import Calculation
 from autode.config import Config
 from autode.input_output import atoms_to_xyz_file
@@ -256,7 +256,8 @@ class Species:
         self.charge = int(charge)
         self.mult = int(mult)
 
-        self.solvent = get_solvent(solvent_name=solvent_name)
+        # self.solvent = get_solvent(solvent_name=solvent_name)
+        self.solvent = None
         
         self.energy = None        # Total electronic energy in Hartrees (float)
 
