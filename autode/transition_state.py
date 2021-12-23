@@ -73,9 +73,9 @@ class TransitionState(TSbase):
 
     def _generate_conformers(self, n_confs=None):
         """Generate conformers at the TS """
-        from autode.conformers.conformer import Conformer
-        from autode.conformers.conf_gen import get_simanl_atoms
-        from autode.conformers.conformers import conf_is_unique_rmsd
+        from autode.conformer import Conformer
+        from autode.conf_gen import get_simanl_atoms
+        from autode.conformers import conf_is_unique_rmsd
 
         n_confs = Config.num_conformers if n_confs is None else n_confs
         self.conformers = []
